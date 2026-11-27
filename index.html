@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>nightstand · pick up where you left off</title>
+<meta name="description" content="One place to save, share, and rate whatever you're reading (or meaning to read). There's always something on the shelf.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="nightstand">
+<meta property="og:description" content="Pick up where you left off.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="media/icon.png">
+<link rel="apple-touch-icon" href="media/apple-touch-icon.png">
+<style>
+/* nightstand.ink, 2026-11-27: one screen, no scroll, on the app's true black.
+   The phone shows the app's closed cover as it is today (the Duo's outer screen, 2026-11-27): the picture full screen,
+   the date stamp top left, the title in Charter bold, "author · SITE", the shelf and more buttons. The Duo belongs in the App Store listing. */
+:root {
+  --ground: #000; --paper: #f3efe5;
+  --p100: #f3efe5; --p72: rgba(243,239,229,.72); --p56: rgba(243,239,229,.56);
+  --lamp: #f7cb52;
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --serif: ui-serif, "New York", "Iowan Old Style", Georgia, serif;
+  --mark: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+html, body { margin: 0; height: 100% }
+body { background: var(--ground); color: var(--p100); font-family: var(--sans); -webkit-font-smoothing: antialiased;
+  display: flex; flex-direction: column; height: 100svh; overflow: hidden }
+a { color: inherit }
+a:focus-visible { outline: 2px solid var(--lamp); outline-offset: 3px; border-radius: 4px }
+
+main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); gap: 56px; align-items: center;
+  width: 100%; max-width: 1240px; margin: 0 auto; padding: 24px max(32px, env(safe-area-inset-left, 0px)) 16px max(32px, env(safe-area-inset-right, 0px)) }
+.mark { width: 60px; height: 60px; display: block }
+.wm { display: block; font: 700 clamp(52px, 5.6vw, 76px)/.95 var(--mark); letter-spacing: -.03em; margin: 20px 0 16px }
+h1 { font: 400 clamp(21px, 1.9vw, 25px)/1.3 var(--serif); color: var(--p72); margin: 0 0 24px }
+.lede { font-size: 16.5px; line-height: 1.55; color: var(--p72); margin: 0 0 30px }
+.store { display: inline-block; border-radius: 9px }
+.store img { display: block; height: 48px; width: auto }
+.store:hover { opacity: .88 } .store:active { translate: 0 1px }
+.when { font-size: 14px; color: var(--p56); margin: 12px 0 0 }
+
+/* the device: an iPhone showing the app's cover (the same cover the Duo shows on its outer screen and its left page) */
+.slot { justify-self: end; height: min(720px, calc(100svh - 110px)); min-height: 0; container-type: size; width: 100%; display: flex; justify-content: center }
+.duo { --w: min(100cqw, 100cqh * 9 / 19.5); width: var(--w); aspect-ratio: 9 / 19.5; position: relative; border-radius: calc(var(--w) * .165); padding: calc(var(--w) * .032);
+  background: #121315; box-shadow: inset 0 0 0 1.5px #2c2d31, 0 60px 120px -50px rgba(0,0,0,.9) }
+.duo::before { content: ""; position: absolute; top: calc(var(--w) * .07); left: 50%; translate: -50% 0; width: 30%; height: calc(var(--w) * .088); border-radius: 99px; background: #000; z-index: 3 }
+.scr { container-type: size; position: relative; height: 100%; border-radius: calc(var(--w) * .135); overflow: hidden; background: var(--ground) }
+.cover { position: relative; overflow: hidden }
+.cover { position: relative; height: 100%; overflow: hidden }
+.cover .pic { position: absolute; inset: 0; background: #222 center / cover no-repeat; transition: opacity .6s ease }
+.cover .pic::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(0,0,0,0) 62%, rgba(0,0,0,.55) 80%, rgba(0,0,0,.82)) }
+.cover .stamp { position: absolute; top: 5.4cqh; left: 5.5cqw; z-index: 2; padding: .5cqh 2.6cqw; border-radius: 99px; background: rgba(0,0,0,.32);
+  font-size: 3.6cqw; font-weight: 500; color: rgba(243,239,229,.8); transition: opacity .6s ease }
+.cover .words { position: absolute; left: 6cqw; right: 6cqw; bottom: 5.5cqh; transition: opacity .6s ease }
+.cover.swap .pic, .cover.swap .words, .cover.swap .stamp { opacity: 0 }
+.cover h2 { font: 700 8.6cqw/1.12 var(--mark); letter-spacing: -.005em; margin: 0 0 2cqh; text-wrap: balance; max-width: 92% }
+.cover h2.long { font-size: 7cqw }
+.cover .by { display: flex; align-items: center; gap: 2cqw; font-size: 3.4cqw; color: var(--p72); margin: 0 }
+.cover .by span { font-variant-caps: all-small-caps; letter-spacing: .08em; font-weight: 600 }
+.cover .by .ic { margin-left: auto; display: flex; align-items: center; gap: 6cqw; color: var(--p100) }
+.cover .by .ic svg { width: 5.4cqw; height: 5.4cqw; display: block }
+
+footer { display: flex; justify-content: space-between; gap: 12px; width: 100%; max-width: 1240px; margin: 0 auto;
+  padding: 0 max(32px, env(safe-area-inset-left, 0px)) max(22px, env(safe-area-inset-bottom, 0px)) max(32px, env(safe-area-inset-right, 0px)); font-size: 13px; color: var(--p56) }
+footer a { text-decoration: none } footer a:hover { color: var(--p100) }
+
+/* a phone: the words above, the phone, the badge */
+@media (max-width: 860px) {
+  main { grid-template-columns: 1fr; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 0; height: 100%; align-items: start;
+    padding: max(18px, env(safe-area-inset-top, 0px)) 24px 12px }
+  main > div:first-child { display: contents }
+  .mark, .lede, .when { display: none }
+  .wm { order: 1; font-size: 46px; margin: 0 0 6px }
+  h1 { order: 2; font-size: 19px; margin: 0 0 16px }
+  .slot { order: 3; height: 100%; justify-self: center; margin-bottom: 14px }
+  .store { order: 4; justify-self: center } .store img { height: 44px }
+}
+@media (max-height: 640px) and (min-width: 861px) { .lede { display: none } .mark { width: 44px; height: 44px } }
+@media (prefers-reduced-motion: reduce) { .cover .pic, .cover .words { transition: none } }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <img class="mark" src="media/roundtable.svg" alt="">
+    <span class="wm">nightstand</span>
+    <h1>Pick up where you left off.</h1>
+    <p class="lede">One place to save, share, and rate whatever you’re reading (or meaning to read). There’s always something on the shelf.</p>
+    <a class="store" href="#" aria-label="Download Nightstand on the App Store"><img src="media/app-store-badge.svg" alt="Download on the App Store"></a>
+    <p class="when">For iPhone and iPad</p>
+  </div>
+  <div class="slot"><div class="duo" role="img" aria-label="Nightstand on iPhone: tonight's story">
+    <div class="scr">
+      <div class="cover">
+        <div class="pic" data-pic></div>
+        <div class="stamp" data-stamp></div>
+        <div class="words">
+          <h2 data-title></h2>
+          <p class="by"><b data-author></b> · <span data-site></span>
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="7" width="4" height="13" rx=".8"/><rect x="8.5" y="4" width="4" height="16" rx=".8"/><path d="M14.5 6.6l3.7-1 3.4 12.6-3.7 1z"/><path d="M2 21h20"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg></span></p>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</main>
+<footer><a href="https://idiom.ltd">nightstand x idiom.ltd</a><span>made w/ love in the DMV</span></footer>
+<script>
+// Stories the app has put on its cover, each with its own lead image. One crossfade every 5 s, no zoom.
+// [title, author, site, dek, meta, image, position, shelf state, minutes left, cover stamp]
+const S = [
+  ['“The Clock Is Ticking”: Inside the Worst U.S. Maritime Disaster in Decades', 'William Langewiesche', 'Vanity Fair', 'The last voyage of the El Faro, told from the bridge recorder.', 'Apr 2018 · 52 min · Picked for you', 'https://media.vanityfair.com/photos/5ac3d4355b63016ab0671f73/16:9/w_1280,c_limit/t-MAG-0418-El-Faro.jpg', '30% center', 'Picked', 52, 'Apr 2018'],
+  ['The Really Big One', 'Kathryn Schulz', 'The New Yorker', 'An earthquake will destroy a sizable portion of the coastal Northwest. The question is when.', 'Jul 2015 · 34 min · Saved', 'https://media.newyorker.com/photos/59096ed82179605b11ad7510/16:9/w_1280,c_limit/150720_r26752.jpg', '62% center', 'Saved', 21, 'Jul 2015'],
+  ['19: The True Story of the Yarnell Hill Fire', 'Kyle Dickman', 'Outside', 'Nineteen hotshots, one ridge in Arizona, one afternoon.', 'Sep 2013 · 41 min · Saved', 'https://cdn.outsideonline.com/wp-content/uploads/2018/09/14/yarnell-fire-opener-longform_h.jpg', 'center', 'Saved', 27, 'Sep 2013'],
+  ['Machine Hermeneutics (2033)', 'Jack Clark', 'Import AI', 'A short story from Import AI 482, set in 2033.', 'Nov 2026 · 4 min · Shared', 'https://pbs.twimg.com/media/HYJr1ynbMAADqfH.jpg', '38% center', 'Shared', 4, 'Nov 27'],
+];
+const q = (k) => document.querySelector(`[data-${k}]`), cover = document.querySelector('.cover');
+S.forEach((x) => { new Image().src = x[5] });
+const set = (i) => {
+  const [title, author, site, dek, meta, img, pos, , , stamp] = S[i];
+  q('title').textContent = title; q('title').classList.toggle('long', title.length > 40); q('author').textContent = author; q('site').textContent = site;
+  q('stamp').textContent = stamp;
+  q('pic').style.backgroundImage = `url("${img}")`; q('pic').style.backgroundPosition = pos;
+};
+let i = 0; set(0);
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  setInterval(() => { cover.classList.add('swap'); setTimeout(() => { set(i = (i + 1) % S.length); cover.classList.remove('swap') }, 600) }, 5000);
+}
+</script>
+</body>
+</html>
